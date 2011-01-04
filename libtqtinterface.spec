@@ -17,7 +17,9 @@ Source0:	http://mirror.its.uidaho.edu/pub/trinity/releases/%{version}/dependenci
 URL:		http://trinity.pearsoncomputing.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libltdl-devel
 BuildRequires:	libtool
+BuildRequires:	pkgconfig
 BuildRequires:	qt-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -51,7 +53,8 @@ cp -p %{_datadir}/libtool/config/ltmain.sh admin/ltmain.sh
 %endif
 	--%{!?with_qt4:dis}%{?with_qt4:en}able-qt4
 
-%{__make}
+%{__make} \
+	LIBTOOL="%{_bindir}/libtool -v"
 
 %install
 rm -rf $RPM_BUILD_ROOT
