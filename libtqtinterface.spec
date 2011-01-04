@@ -10,7 +10,7 @@
 Summary:	Interface and abstraction library for Qt and Trinity
 Name:		libtqtinterface
 Version:	3.5.12
-Release:	0.1
+Release:	0.2
 License:	GPL v2
 Group:		X11/Libraries
 Source0:	http://mirror.its.uidaho.edu/pub/trinity/releases/%{version}/dependencies/tqtinterface-%{version}.tar.gz
@@ -81,7 +81,8 @@ cp -p %{_datadir}/libtool/config/ltmain.sh admin/ltmain.sh
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__make} install \
+# force -j1 or USE_QTX is replaced _after_ file is installed
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
 
 # --disable-static did not work, rm it again
