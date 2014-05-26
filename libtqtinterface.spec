@@ -2,25 +2,25 @@
 # Conditional build:
 %bcond_with		qt4     # Enable Qt4 support (this will disable all Qt3 support)
 
-%define		rel	0.1
-%define		svnrev		1229013
 Summary:	Interface and abstraction library for Qt and Trinity
 Name:		libtqtinterface
-Version:	3.5.12
-Release:	2.%{svnrev}.%{rel}
+Version:	3.5.13.2
+Release:	1
 License:	GPL v2
 Group:		X11/Libraries
-#Source0:	http://mirror.its.uidaho.edu/pub/trinity/releases/%{version}/dependencies/tqtinterface-%{version}.tar.gz
-Source0:	tqtinterface-%{version}-r%{svnrev}.tar.bz2
-# Source0-md5:	c510477499087356ca795b78a16fb972
+Source0:	http://ftp.fau.de/trinity/releases/%{version}/dependencies/tqtinterface-trinity-%{version}.tar.xz
+# Source0-md5:	27db0d4214b71f4279e77de301e62bf8
 URL:		http://trinity.pearsoncomputing.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	cmake >= 2.8
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	qt-devel
 BuildRequires:	sed >= 4.0
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 Obsoletes:	tqtinterface < 3.5.12-2.1229013
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -49,8 +49,7 @@ Header files for libtqtinterface library.
 Pliki nagłówkowe biblioteki libtqtinterface.
 
 %prep
-%setup -qc
-mv tqtinterface/* .
+%setup -q -n tqtinterface-trinity-%{version}
 
 %build
 install -d build
@@ -74,6 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 
 # obsoleted by pkgconfig
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libtqt.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libtqassistantclient.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -85,6 +85,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libtqt.so.*.*.*
 %ghost %attr(755,root,root) %{_libdir}/libtqt.so.4
+%attr(755,root,root) %{_libdir}/libtqassistantclient.so.*.*.*
+%ghost %attr(755,root,root) %{_libdir}/libtqassistantclient.so.4
 
 %files devel
 %defattr(644,root,root,755)
@@ -107,3 +109,4 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_includedir}/tqt/Qt/*.h
 %{_pkgconfigdir}/tqt.pc
 %{_libdir}/libtqt.so
+%{_libdir}/libtqassistantclient.so
