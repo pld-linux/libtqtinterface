@@ -1,20 +1,18 @@
-# TODO
-# - for some unknown reason to me it creates dead symlinks instead of libtqt shared library
-#   libtool: install: /usr/bin/install -c -p .libs/libtqt.so.4.2.0 /tmp/xxx/usr/lib64/libtqt.so.4.2.0
-#   /usr/bin/install: cannot stat `.libs/libtqt.so.4.2.0': No such file or directory
-#   workarounded in spec r1.2 commit
 #
 # Conditional build:
 %bcond_with		qt4     # Enable Qt4 support (this will disable all Qt3 support)
 
+%define		rel	0.1
+%define		svnrev		1229013
 Summary:	Interface and abstraction library for Qt and Trinity
 Name:		libtqtinterface
 Version:	3.5.12
-Release:	0.2
+Release:	2.%{svnrev}.%{rel}
 License:	GPL v2
 Group:		X11/Libraries
-Source0:	http://mirror.its.uidaho.edu/pub/trinity/releases/%{version}/dependencies/tqtinterface-%{version}.tar.gz
-# Source0-md5:	361c45961184f01f95d3b771138c8229
+#Source0:	http://mirror.its.uidaho.edu/pub/trinity/releases/%{version}/dependencies/tqtinterface-%{version}.tar.gz
+Source0:	tqtinterface-%{version}-r%{svnrev}.tar.bz2
+# Source0-md5:	c510477499087356ca795b78a16fb972
 URL:		http://trinity.pearsoncomputing.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -23,6 +21,7 @@ BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	qt-devel
 BuildRequires:	sed >= 4.0
+Obsoletes:	tqtinterface < 3.5.12-2.1229013
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -41,6 +40,7 @@ Summary:	Header files for libtqtinterface library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libtqtinterface
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Obsoletes:	tqtinterface-devel < 3.5.12-2.1229013
 
 %description devel
 Header files for libtqtinterface library.
@@ -50,43 +50,30 @@ Pliki nagłówkowe biblioteki libtqtinterface.
 
 %prep
 %setup -qc
-mv dependencies/tqtinterface/* .
-
-# libtool copy
-rm -r libltdl
-%{__sed} -i -e '/ltdl.m4/d' Makefile.am.in
-
-# remove copy of QtCore and QtGui devel headers
-rm -r qtinterface/qt4 qtinterface/tqt4
-%{__sed} -i -e /tqt4/d qtinterface/Makefile.am
+mv tqtinterface/* .
 
 %build
-cp -p /usr/share/automake/config.sub admin
-cp -p %{_aclocaldir}/libtool.m4 admin/libtool.m4.in
-cp -p %{_datadir}/libtool/config/ltmain.sh admin/ltmain.sh
-%{__make} -f admin/Makefile.common cvs
-
-%configure \
-	--%{?debug:en}%{!?debug:dis}able-debug%{?debug:=full} \
-	--disable-final \
-	--disable-static \
-	--includedir=%{_includedir}/tqt \
+install -d build
+cd build
+%cmake \
+	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
+	-DQT_VERSION=3 \
+	-DQT_INCLUDE_DIR=%{_includedir}/qt \
+	-DQT_LIBRARY_DIR=%{_libdir} \
 %if "%{_lib}" == "lib64"
-	--enable-libsuffix=64 \
+	-DLIB_SUFFIX=64 \
 %endif
-	%{?with_qt4:--enable-qt4}
+	../
 
-%{__make} \
-	LIBTOOL="%{_bindir}/libtool -v"
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-# force -j1 or USE_QTX is replaced _after_ file is installed
-%{__make} -j1 install \
-	DESTDIR=$RPM_BUILD_ROOT \
+%{__make} -C build install \
+	DESTDIR=$RPM_BUILD_ROOT
 
-# --disable-static did not work, rm it again
-rm $RPM_BUILD_ROOT%{_libdir}/libtqt.a
+# obsoleted by pkgconfig
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libtqt.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -110,9 +97,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/dcopidlng-tqt
 %attr(755,root,root) %{_bindir}/mcopidl-tqt
 %attr(755,root,root) %{_bindir}/moc-tqt
+%attr(755,root,root) %{_bindir}/tmoc
 %attr(755,root,root) %{_bindir}/tqt-replace
 %attr(755,root,root) %{_bindir}/tqt-replace-stream
+%attr(755,root,root) %{_bindir}/uic-tqt
 %dir %{_includedir}/tqt
 %{_includedir}/tqt/tq*.h
-%{_libdir}/libtqt.la
+%dir %{_includedir}/tqt/Qt
+%dir %{_includedir}/tqt/Qt/*.h
+%{_pkgconfigdir}/tqt.pc
 %{_libdir}/libtqt.so
