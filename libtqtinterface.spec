@@ -2,13 +2,14 @@
 # Conditional build:
 %bcond_with		qt4     # Enable Qt4 support (this will disable all Qt3 support)
 
+%define	tde_ver	R14.0.0
 Summary:	Interface and abstraction library for Qt and Trinity
 Name:		libtqtinterface
-Version:	R14.0.0
+Version:	4.2.0
 Release:	1
 License:	GPL v2
 Group:		X11/Libraries
-Source0:	http://tde-mirror.yosemite.net/trinity/releases/%{version}/dependencies/tqtinterface-%{version}.tar.bz2
+Source0:	http://tde-mirror.yosemite.net/trinity/releases/%{version}/dependencies/tqtinterface-%{tde_ver}.tar.bz2
 # Source0-md5:	084cde7fe87789796a9d624b3a8c1663
 URL:		http://trinity.pearsoncomputing.net/
 BuildRequires:	autoconf
