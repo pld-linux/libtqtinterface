@@ -4,12 +4,12 @@
 
 Summary:	Interface and abstraction library for Qt and Trinity
 Name:		libtqtinterface
-Version:	3.5.13.2
+Version:	R14.0.0
 Release:	1
 License:	GPL v2
 Group:		X11/Libraries
-Source0:	http://ftp.fau.de/trinity/releases/%{version}/dependencies/tqtinterface-trinity-%{version}.tar.xz
-# Source0-md5:	27db0d4214b71f4279e77de301e62bf8
+Source0:	http://tde-mirror.yosemite.net/trinity/releases/%{version}/dependencies/tqtinterface-%{version}.tar.bz2
+# Source0-md5:	084cde7fe87789796a9d624b3a8c1663
 URL:		http://trinity.pearsoncomputing.net/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -49,7 +49,8 @@ Header files for libtqtinterface library.
 Pliki nagłówkowe biblioteki libtqtinterface.
 
 %prep
-%setup -q -n tqtinterface-trinity-%{version}
+%setup -qc
+mv dependencies/tqtinterface/* .
 
 %build
 install -d build
@@ -108,5 +109,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_includedir}/tqt/Qt
 %dir %{_includedir}/tqt/Qt/*.h
 %{_pkgconfigdir}/tqt.pc
+%{_pkgconfigdir}/tqtqui.pc
 %{_libdir}/libtqt.so
 %{_libdir}/libtqassistantclient.so
