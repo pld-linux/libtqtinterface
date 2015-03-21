@@ -56,14 +56,10 @@ mv dependencies/tqtinterface/* .
 install -d build
 cd build
 %cmake \
-	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DQT_VERSION=3 \
 	-DQT_INCLUDE_DIR=%{_includedir}/qt \
 	-DQT_LIBRARY_DIR=%{_libdir} \
-%if "%{_lib}" == "lib64"
-	-DLIB_SUFFIX=64 \
-%endif
-	../
+	..
 
 %{__make}
 
